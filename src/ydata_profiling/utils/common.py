@@ -1,5 +1,6 @@
 """Common util functions (e.g. missing in Python)."""
 import collections.abc
+import contextlib
 import os
 import platform
 import subprocess
@@ -97,11 +98,14 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
 
 
-def analytics_features(dataframe, datatype: bool, report_type: bool):
+def analytics_features(dataframe: str, datatype: str, report_type: str) -> None:
     endpoint = "https://packages.ydata.ai/ydata-profiling?"
+    package_version = __version__
 
-    if os.getenv("YDATA_PROFILING_NO_ANALYTICS") != True:
-        package_version = __version__
+    if (
+        bool(os.getenv("YDATA_PROFILING_NO_ANALYTICS")) is not True
+        and package_version != "0.0.dev0"
+    ):
         try:
             subprocess.check_output("nvidia-smi")
             gpu_present = True
@@ -110,7 +114,7 @@ def analytics_features(dataframe, datatype: bool, report_type: bool):
 
         python_version = ".".join(platform.python_version().split(".")[:2])
 
-        try:
+        with contextlib.suppress(Exception):
             request_message = (
                 f"{endpoint}version={package_version}"
                 f"&python_version={python_version}"
@@ -122,5 +126,3 @@ def analytics_features(dataframe, datatype: bool, report_type: bool):
             )
 
             requests.get(request_message)
-        except Exception:
-            pass

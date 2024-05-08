@@ -10,20 +10,14 @@ from ydata_profiling.utils.common import analytics_features
 
 
 class ProfilingLogger(logging.Logger):
-    def __init__(self, name, level=logging.INFO):
+    def __init__(self, name: str, level: int =logging.INFO):
         super().__init__(name, level)
 
-    def info(
-        self,
-        msg: object,
-    ) -> None:
-        super().info(f"[PROFILING] - {msg}.")
-
-    def info_def_report(self, dataframe, timeseries: bool):
-        if dataframe == pd.DataFrame:
+    def info_def_report(self, dataframe, timeseries: bool) -> None: # type: ignore
+        if dataframe is pd.DataFrame:
             dataframe = "pandas"
             report_type = "regular"
-        elif dataframe == type(None):
+        elif dataframe is type(None):
             dataframe = "pandas"
             report_type = "compare"
         else:

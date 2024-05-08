@@ -44,11 +44,10 @@ from ydata_profiling.report.presentation.flavours.html.templates import (
 )
 from ydata_profiling.serialize_report import SerializeReport
 from ydata_profiling.utils.dataframe import hash_dataframe
+from ydata_profiling.utils.logger import ProfilingLogger
 from ydata_profiling.utils.paths import get_config
 
-from ydata_profiling.utils.logger import ProfilingLogger
-
-logger = ProfilingLogger(name='ReportLogger')
+logger = ProfilingLogger(name="ReportLogger")
 
 
 @typechecked
@@ -95,7 +94,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Args:
             df: a pandas or spark.sql DataFrame
             minimal: minimal mode is a default configuration with minimal computation
-            ts_mode: activates time-series analysis for all the numerical variables from the dataset. Only available for pd.DataFrame
+            ts_mode: activates time-series analysis for all the numerical variables from the dataset.
+            Only available for pd.DataFrame
             sort_by: ignored if ts_mode=False. Order the dataset by a provided column.
             sensitive: hides the values for categorical and text variables for report privacy
             config_file: a config file (.yml), mutually exclusive with `minimal`
@@ -204,8 +204,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
     ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
 
-        logger.info_def_report(dataframe=type(df),
-                               timeseries=report_config.vars.timeseries.active)
+        logger.info_def_report(
+            dataframe=type(df), timeseries=report_config.vars.timeseries.active
+        )
 
         if (
             df is not None
